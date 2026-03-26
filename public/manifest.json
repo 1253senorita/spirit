@@ -1,0 +1,104 @@
+/* ==========================================================
+   🍎 START: SYSTEM CORE & DEPENDENCIES (시스템 핵심)
+   ========================================================== */
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const { ExpressPeerServer } = require('peer');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+require('dotenv').config();
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+/* 🍎 END: SYSTEM CORE */
+
+
+/* ==========================================================
+   🍍 START: STORAGE & RTC SERVER SETUP (저장소 및 RTC 설정)
+   ========================================================== */
+const recDir = path.join(__dirname, 'recordings');
+if (!fs.existsSync(recDir)) { fs.mkdirSync(recDir); }
+
+const peerServer = ExpressPeerServer(server, { debug: false, path: '/' });
+app.use('/peerjs', peerServer);
+app.use(express.static(path.join(__dirname, 'public')));
+/* 🍍 END: RTC SETUP */
+
+
+/* ==========================================================
+   🍇 START: SOCKET.IO LOGIC & OBSERVER (통신 및 감시 로직)
+   ========================================================== */
+io.on('connection', (socket) => {
+    const penguinId = socket.id.substring(0, 5);
+    console.log(`📡 [CONN] 새 연결 발생: ${penguinId}`);
+
+    // [ROOM JOIN] ------------------------------------------
+    socket.on('join-room', (roomId) => {
+        socket.join(roomId);
+        socket.myRoom = roomId;
+        console.log(`🏠 [ROOM] ${penguinId} -> ${roomId} 입장`);
+    });
+
+    // [PTT ENGINE] -----------------------------------------
+    socket.on('ptt-start', (data) => {
+        const time = new Date().toLocaleTimeString();
+        console.log(`\n[${time}] 🎤 TX START: User[${penguinId}]`);
+        socket.to(socket.myRoom).emit('ptt-receiving', { id: data.id });
+    });
+
+    socket.on('ptt-stop', () => {
+        console.log(`[${new Date().toLocaleTimeString()}] 🔇 TX END: User[${penguinId}]`);
+        socket.to(socket.myRoom).emit('ptt-stopped');
+    });
+
+    // [AUDIO SYNC OBSERVER] --------------------------------
+    socket.on('sync-audio-file', (data) => {
+        if (!data.blob) return;
+        const sizeKB = (Buffer.from(data.blob).length / 1024).toFixed(2);
+        console.log(`📦 [AUDIO] From[${penguinId}] Size[${sizeKB} KB]`);
+
+        socket.to(socket.myRoom).emit('receive-sync-audio', {
+            blob: data.blob,
+            id: penguinId
+        });
+
+        const fName = `voice_${socket.myRoom}_${Date.now()}.webm`;
+        fs.writeFile(path.join(recDir, fName), Buffer.from(data.blob), (err) => {
+            if (!err) console.log(`   └─ 💾 Saved: ${fName}`);
+        });
+    });
+
+    socket.on('disconnect', () => {
+        console.log(`🔌 [DISCONN] 연결 종료: ${penguinId}`);
+    });
+});
+/* 🍇 END: SOCKET LOGIC */
+
+
+/* ==========================================================
+   🍓 START: NETWORK INTERFACE & BOOTSTRAP (부팅 설정)
+   ========================================================== */
+function getLocalIP() {
+    const interfaces = os.networkInterfaces();
+    for (const devName in interfaces) {
+        const iface = interfaces[devName];
+        for (let i = 0; i < iface.length; i++) {
+            const alias = iface[i];
+            if (alias.family === 'IPv4' && !alias.internal) return alias.address;
+        }
+    }
+    return '0.0.0.0';
+}
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n==========================================================`);
+    console.log(`🚀 Spirit v5.2 Hybrid Engine Online`);
+    console.log(`🏠 Local: http://localhost:${PORT}`);
+    console.log(`📱 Mobile: http://${getLocalIP()}:${PORT}`);
+    console.log(`==========================================================\n`);
+});
+/* 🍓 END: BOOTSTRAP */

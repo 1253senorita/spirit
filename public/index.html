@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WIKI-ROUTER v5.2</title>
+    <link rel="stylesheet" href="/css/app-shell.css">
+    <link rel="stylesheet" href="/css/modules.css?v=1.0.1"> 
+</head>
+<body>
+
+    <header>
+        <h1>WIKI-ROUTER v5.2</h1>
+        <div id="status-display">
+            System Status: <span id="status">Locked</span>
+        </div>
+    </header>
+
+    <main id="app-viewport">
+        
+        <section id="ptt-view" class="view-fade">
+            <div class="p-btn-zone">
+                <button id="p-trig" class="neo-btn" 
+                        onmousedown="App.startPTT()" onmouseup="App.stopPTT()"
+                        ontouchstart="App.startPTT()" ontouchend="App.stopPTT()">
+                    <span>🐧</span>
+                </button>
+            </div>
+            <div id="l-box" class="logs">
+                </div>
+        </section>
+
+        <section id="phone-view" class="view-fade" style="display:none;">
+            <div class="switch-container">
+                 <div class="slide-track" id="master-switch" onclick="App.activate()">
+                    <div id="slide-fill" class="slide-fill"></div>
+                    <div id="slide-handle" class="slide-handle">📞</div>
+                </div>
+                <p class="status-label">시스템 연결 스위치</p>
+            </div>
+        </section>
+
+        <section id="classic_v06-view" class="view-fade" style="display:none; width:100%; height:100%;">
+            <iframe src="/v06/index.html" style="width:100%; height:100%; border:none; border-radius:20px;"></iframe>
+        </section>
+
+        <section id="chat-view" class="view-fade" style="display:none;">
+            <div id="chat-logs" class="logs" style="flex:1; width:100%;"></div>
+            <div class="input-group" style="display:flex; width:100%; gap:10px; margin-top:15px;">
+                <input type="text" id="msg-input" class="neo-input" placeholder="메시지 입력..." style="flex:1;">
+                <button class="neo-btn" onclick="App.sendMessage()" style="padding:10px 20px;">전송</button>
+            </div>
+        </section>
+
+    </main>
+
+    <nav id="bottom-nav">
+        <button id="btn-ptt" class="nav-btn active" onclick="App.switchView('ptt')">📻 무전</button>
+        <button id="btn-phone" class="nav-btn" onclick="App.switchView('phone')">📞 전화</button>
+        <button id="btn-chat" class="nav-btn" onclick="App.switchView('chat')">💬 문자</button>
+        <button id="btn-classic" class="nav-btn" onclick="App.switchView('classic_v06')">🍎 구버전</button> 
+    </nav>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
+    <script src="/js/app-core.js"></script>
+</body>
+</html>

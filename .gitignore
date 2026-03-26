@@ -1,0 +1,48 @@
+# .gitignore 파일 생성 및 기본 항목 추가
+Set-Content -Path .gitignore -Value @"
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build outputs
+dist/
+build/
+*.pyc
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDE - VS Code / WebStorm
+.vscode/
+.idea/
+"@
+# Android & IntelliJ specific
+*.iml
+.gradle
+local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx

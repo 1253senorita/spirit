@@ -1,0 +1,96 @@
+:root {
+    --bg: #e0e5ec;
+    --light: #ffffff;
+    --dark: #a3b1c6;
+    --accent: #3498db; 
+    --danger: #ff4757;
+    /* 뉴모피즘 공식 통일 */
+    --inner: inset 6px 6px 12px var(--dark), inset -6px -6px 12px var(--light);
+    --outer: 7px 7px 15px var(--dark), -7px -7px 15px var(--light);
+}
+
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; /* 무전기 버튼 길게 누를 때 텍스트 선택 방지 */
+    font-family: 'Pretendard', sans-serif;
+}
+
+body {
+    background: var(--bg);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 모바일 바운스 방지 */
+}
+
+/* 헤더: 고정 높이 */
+header {
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header h1 { font-size: 1rem; color: #61677c; letter-spacing: 2px; }
+#status-display { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+
+/* 메인 뷰포트: 여기가 기능 모듈이 들어갈 핵심 박스 */
+#app-viewport {
+    flex: 1;
+    margin: 0 20px;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: var(--inner);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* 공통 버튼: 네비게이션과 일반 버튼 통합 */
+.neo-btn {
+    border: none;
+    background: var(--bg);
+    box-shadow: var(--outer);
+    color: #61677c;
+    font-weight: bold;
+    transition: 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.neo-btn:active, .neo-btn.active {
+    box-shadow: var(--inner);
+    transform: scale(0.96);
+}
+
+/* 하단 네비게이션 바 */
+#bottom-nav {
+    height: 90px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.nav-btn {
+    width: 70px;
+    height: 50px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+/* 애니메이션 */
+.view-fade {
+    animation: fadeIn 0.3s ease-out;
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
