@@ -27,7 +27,7 @@ body {
 
 /* 헤더: 고정 높이 */
 header {
-    height: 80px;
+    height: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -51,7 +51,7 @@ header h1 { font-size: 1rem; color: #61677c; letter-spacing: 2px; }
 
 #bottom-nav {
     position: fixed;
-    /* 바닥에서 20px 정도 띄웁니다. 숫자를 키울수록 더 위로 올라갑니다. */
+    /* 바닥에서 100px 정도 띄웁니다. 숫자를 키울수록 더 위로 올라갑니다. */
     bottom: calc(20px + env(safe-area-inset-bottom)); 
     left: 5%;
     width: 90%; /* 화면 양옆에 여백을 주어 둥둥 떠 있게 만듭니다 */
@@ -85,23 +85,45 @@ header h1 { font-size: 1rem; color: #61677c; letter-spacing: 2px; }
     box-shadow: var(--inner);
     transform: scale(0.96);
 }
-
-/* 하단 네비게이션 바 */
+/* 하단 네비게이션 바 (하나로 통합) */
 #bottom-nav {
-    height: 90px;
+    position: fixed;
+    /* 바닥에서 띄우는 높이를 60px로 상향 조정 */
+    bottom: calc(60px + env(safe-area-inset-bottom)); 
+    left: 5%;
+    width: 90%;
+    
+    /* 높이를 고정(height)하기보다 padding으로 조절하는게 안전 영역 대응에 유리합니다 */
+    padding: 15px 10px; 
+    
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95); /* 배경을 좀 더 불투명하게 해서 시인성 확보 */
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0 10px;
+    z-index: 1000;
+    
+    /* 뉴모피즘 그림자 효과 */
+    box-shadow: 5px 5px 15px var(--dark), -5px -5px 15px var(--light);
 }
 
 .nav-btn {
-    width: 70px;
-    height: 50px;
+    width: 75px;  /* 버튼 크기를 약간 키움 */
+    height: 55px;
     border-radius: 15px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    
+    /* 기본 버튼 스타일 상속 (neo-btn 스타일 적용) */
+    border: none;
+    background: var(--bg);
+    box-shadow: var(--outer);
+    color: #61677c;
+    font-weight: bold;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 /* 애니메이션 */
 .view-fade {
     animation: fadeIn 0.3s ease-out;
